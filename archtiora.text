@@ -1,0 +1,33 @@
+emotion-lrm/
+├── data/
+│   ├── raw/
+│   │   └── goemotions.csv              # raw dataset
+│   ├── processed/
+│   │   ├── goemotions_clean.jsonl      # cleaned/filtered dataset
+│   │   ├── goemotions_cot_train.jsonl  # with reasoning chains (train)
+│   │   └── goemotions_cot_val.jsonl    # with reasoning chains (validation)
+│   └── samples/
+│       └── tiny_debug_1k.jsonl         # tiny subset for i7 debugging
+│
+├── src/
+│   ├── data/
+│   │   ├── preprocess_goemotions.py    # cleaning, balancing, train/val split
+│   │   └── build_cot_dataset.py        # generate CoT via a large LRM
+│   ├── models/
+│   │   ├── base_model_loader.py        # load base model (Llama/Qwen)
+│   │   ├── lora_finetune.py            # LoRA fine-tuning
+│   │   └── inference.py                # run inference with the fine-tuned model (CPU/GPU)
+│   │   └── ollama_client.py
+│   │   └── inference_ollama.py
+│   │   └──llm_engine.py
+│   ├── reasoning/
+│   │   ├── prompt_templates.py         # CoT templates for emotional/logical reasoning
+│   │   ├──emotion_reasoner_ollama.py
+│   │   ├── emotion_reasoner.py         # reasoning logic (chain-of-thought)
+│   │   └── evaluation.py               # performance metrics + reasoning quality analysis
+│   ├── api/
+│   │   └── app.py                      # FastAPI/Flask endpoint: /analyze_text
+│   └── ui/
+│       └── app_streamlit.py            # small demo UI (text → emotion + explanation)
+│
+├── notebooks
