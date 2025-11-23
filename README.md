@@ -50,70 +50,72 @@ accessible models without requiring GPUs or large compute environments.
 
 flowchart TD
 
-    A["What is an LRM?
-Lightweight Reasoning Model:
-- Small model (Qwen / Llama)
-- Fine-tuned with LoRA
-- Learns reasoning from CoT
-- Runs on CPU (Intel i7)
-- Outputs emotion + explanation"] --> B
+    A["**What is an LRM?**<br/>
+    Lightweight Reasoning Model:<br/>
+    - Small model (Qwen/Llama)<br/>
+    - LoRA fine-tuned<br/>
+    - Learns CoT reasoning<br/>
+    - Runs on CPU<br/>
+    - Outputs emotion + explanation"] --> B
 
-    B["Raw Dataset
-GoEmotions (58k Reddit comments)
-data/raw/goemotions.csv"] --> C["Advanced Cleaning Pipeline
-src/data/preprocess_goemotions.py
-- Annotator agreement filtering
-- Neutral-dominance reduction
-- NLP token analysis
-- Embedding-based outlier removal
-- Remove spam / short / low-affect text"]
+    B["**Raw Dataset**<br/>
+    GoEmotions (58k)<br/>
+    data/raw/goemotions.csv"] --> C
 
-    C --> D["Cleaned Dataset
-data/processed/goemotions_clean.jsonl"]
+    C["**Cleaning Pipeline**<br/>
+    preprocess_goemotions.py<br/>
+    - Annotator filtering<br/>
+    - Neutral reduction<br/>
+    - NLP token checks<br/>
+    - Embedding outliers<br/>
+    - Remove spam/short text"] --> D
 
-    D --> E["CoT Generation
-src/data/build_cot_dataset.py
-- Large LLM generates reasoning
-- Template-guided CoT
-- Heuristic validation
-- Reject low-quality reasoning"]
+    D["**Cleaned Dataset**<br/>
+    goemotions_clean.jsonl"] --> E
 
-    E --> F["CoT-Augmented Datasets
-data/processed/goemotions_cot_train.jsonl
-data/processed/goemotions_cot_val.jsonl"]
+    E["**CoT Generation**<br/>
+    build_cot_dataset.py<br/>
+    - Generate reasoning<br/>
+    - Template CoT<br/>
+    - Heuristic filtering"] --> F
 
-    F --> G["LoRA Fine-Tuning
-src/models/lora_finetune.py
-configs/training_config.yaml
-- Qwen/Llama small as base
-- PEFT + LoRA adapters
-- CPU-friendly optimization
-- Distills CoT reasoning"]
+    F["**CoT-Augmented Data**<br/>
+    cot_train.jsonl<br/>
+    cot_val.jsonl"] --> G
 
-    G --> H["LRM - Lightweight Reasoning Model
-LoRA adapters in models/lora/
-- Compact
-- Emotion understanding
-- CoT reasoning enabled"]
+    G["**LoRA Fine-Tuning**<br/>
+    lora_finetune.py<br/>
+    training_config.yaml<br/>
+    - Qwen/Llama base<br/>
+    - PEFT + LoRA<br/>
+    - CPU-friendly"] --> H
 
-    H --> I["Inference Engine
-src/models/inference.py
-Input text -> emotion + reasoning"]
+    H["**LRM Model**<br/>
+    models/lora/<br/>
+    - Compact model<br/>
+    - CoT reasoning"] --> I
 
-    I --> J["FastAPI Endpoint (optional)
-src/api/app.py
-/analyze_text"]
+    I["**Inference**<br/>
+    inference.py<br/>
+    text → emotion + reasoning"] --> J
 
-    I --> K["Streamlit UI (optional)
-src/ui/app_streamlit.py
-Interactive emotion + reasoning viewer"]
+    I --> K
 
-    H --> L["Evaluation Suite
-src/reasoning/evaluation.py
-- Accuracy metrics
-- Confusion matrix
-- Reasoning-quality checks
-- Outlier reasoning detection"]
+    J["**FastAPI (optional)**<br/>
+    api/app.py<br/>
+    /analyze_text"]
+
+    K["**Streamlit UI (optional)**<br/>
+    ui/app_streamlit.py"]
+
+    H --> L
+
+    L["**Evaluation**<br/>
+    evaluation.py<br/>
+    - Accuracy<br/>
+    - Confusion matrix<br/>
+    - CoT quality"]
+
 
 
 
