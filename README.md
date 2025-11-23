@@ -149,7 +149,44 @@ After cleaning, each example is enriched with a reasoning chain:
 - Output is stored as:
 
 
+## Usage
 
+This section describes how to run the full Emotion-LRM pipeline:
+1. Preprocess the dataset  
+2. Generate Chain-of-Thought examples  
+3. Fine-tune the compact model (LoRA)  
+4. Run inference  
+5. Evaluate model performance  
+
+Make sure you have activated your virtual environment and installed all dependencies.
+
+
+---
+
+### 1️⃣ Preprocess the GoEmotions Dataset
+
+Cleans the raw data, filters labels using agreement thresholds, removes noisy samples, and applies NLP/embedding-based quality checks.
+
+```bash
+python -m src.data.preprocess_goemotions
+```
+### 2️⃣ Generate Chain-of-Thought (CoT) Reasoning
+```
+python -m src.data.build_cot_dataset
+```
+### 3️⃣ Fine-Tune the Model Using LoRA
+```
+python -m src.models.lora_finetune
+```
+###4️⃣ Run Inference
+```
+python -m src.models.inference "I feel disappointed and ignored..."
+```
+
+###5️⃣ Evaluate the Model
+```
+python -m src.reasoning.evaluation
+```
 
 ## Installation
 
