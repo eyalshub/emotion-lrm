@@ -178,12 +178,12 @@ python -m src.data.build_cot_dataset
 ```
 python -m src.models.lora_finetune
 ```
-###4️⃣ Run Inference
+### 4️⃣ Run Inference
 ```
 python -m src.models.inference "I feel disappointed and ignored..."
 ```
 
-###5️⃣ Evaluate the Model
+### 5️⃣ Evaluate the Model
 ```
 python -m src.reasoning.evaluation
 ```
