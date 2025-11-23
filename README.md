@@ -46,6 +46,115 @@ accessible models without requiring GPUs or large compute environments.
   Works seamlessly with Qwen, Llama, and other transformer architectures.
 
 
+## LRM Architecture & Full Pipeline
+
+```mermaid
+flowchart TD
+
+    %% ------------------------
+    %% LRM Definition
+    %% ------------------------
+    A[**What is an LRM?**<br><br>
+      Lightweight Reasoning Model:<br>
+      • Small model (Qwen/Llama)<br>
+      • Fine-tuned with LoRA<br>
+      • Learns reasoning from CoT<br>
+      • Runs on CPU (Intel i7)<br>
+      • Outputs emotion + explanation]:::title
+
+    %% ------------------------
+    %% RAW DATA → CLEANING
+    %% ------------------------
+    A --> B[**Raw Dataset**<br>
+            GoEmotions (58k Reddit comments)<br>
+            `data/raw/goemotions.csv`]:::dataset
+
+    B --> C[**Advanced Cleaning Pipeline**<br>
+            `src/data/preprocess_goemotions.py`<br><br>
+            • Annotator agreement filtering<br>
+            • Neutral-dominance reduction<br>
+            • NLP token analysis<br>
+            • Sentence-embedding outlier removal<br>
+            • Remove spam / short / low-affect text]:::process
+
+    C --> D[**Cleaned Dataset**<br>
+            `data/processed/goemotions_clean.jsonl`]:::dataset
+
+    %% ------------------------
+    %% COT GENERATION
+    %% ------------------------
+    D --> E[**CoT Generation**<br>
+            `src/data/build_cot_dataset.py`<br><br>
+            Large LLM produces reasoning:<br>
+            • Step-by-step emotional logic<br>
+            • Template-guided CoT<br>
+            • Heuristic validation<br>
+            • Reject low-quality reasoning]:::reasoning
+
+    E --> F[**CoT-Augmented Datasets**<br>
+            `goemotions_cot_train.jsonl`<br>
+            `goemotions_cot_val.jsonl`]:::dataset
+
+    %% ------------------------
+    %% TRAINING (LoRA)
+    %% ------------------------
+    F --> G[**LoRA Fine-Tuning**<br>
+            `src/models/lora_finetune.py`<br>
+            Configs: `configs/training_config.yaml`<br><br>
+            • Qwen/Llama small as base<br>
+            • PEFT + LoRA adapters<br>
+            • CPU-friendly optimization<br>
+            • Distills CoT reasoning]:::training
+
+    G --> H[**LRM — Lightweight Reasoning Model**<br>
+            (LoRA adapters stored under `models/lora/`)<br><br>
+            • Compact<br>
+            • Emotion-understanding<br>
+            • CoT reasoning enabled]:::model
+
+    %% ------------------------
+    %% INFERENCE
+    %% ------------------------
+    H --> I[**Inference Engine**<br>
+            `src/models/inference.py`<br><br>
+            Input text → Emotion + CoT reasoning]:::inference
+
+    %% ------------------------
+    %% API + UI
+    %% ------------------------
+    I --> J[**FastAPI Endpoint (Optional)**<br>
+            `src/api/app.py`<br>
+            `/analyze_text`]:::api
+
+    I --> K[**Streamlit UI (Optional)**<br>
+            `src/ui/app_streamlit.py`<br>
+            Interactive emotion + reasoning viewer]:::ui
+
+    %% ------------------------
+    %% EVALUATION
+    %% ------------------------
+    H --> L[**Evaluation Suite**<br>
+            `src/reasoning/evaluation.py`<br><br>
+            • Accuracy metrics<br>
+            • Confusion matrix<br>
+            • Reasoning-quality checks<br>
+            • Outlier reasoning detection]:::eval
+
+    %% ------------------------
+    %% STYLES
+    %% ------------------------
+    classDef title fill:#1e1e1e,stroke:#777,color:#fff,font-weight:bold;
+    classDef dataset fill:#2B4C7E,stroke:#1b2a44,color:#fff;
+    classDef process fill:#406E8E,stroke:#1c3b50,color:#fff;
+    classDef reasoning fill:#4C9F70,stroke:#2d6646,color:#fff;
+    classDef training fill:#36827F,stroke:#235856,color:#fff;
+    classDef model fill:#2E8C66,stroke:#1b523f,color:#fff;
+    classDef inference fill:#5FA777,stroke:#3a6d4b,color:#fff;
+    classDef api fill:#8EB95F,stroke:#587a3c,color:#fff;
+    classDef ui fill:#A6C36F,stroke:#6e8447,color:#fff;
+    classDef eval fill:#89A16A,stroke:#526240,color:#fff;
+
+
 ## Project Structure
 ```
 emotion-lrm/
