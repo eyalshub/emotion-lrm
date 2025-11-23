@@ -47,7 +47,7 @@ accessible models without requiring GPUs or large compute environments.
 
 
 ## Project Structure
-
+'''
 emotion-lrm/
 ├── data/
 │ ├── raw/
@@ -96,7 +96,7 @@ emotion-lrm/
 │
 ├── README.md
 └── requirements.txt
-
+'''
 
 ## Dataset
 
